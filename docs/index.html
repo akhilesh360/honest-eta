@@ -45,6 +45,8 @@ footer{margin-top:28px;font-size:12px;color:var(--muted)}a{color:inherit}
 <label for="dist">Trip distance <span class="val" id="distv"></span></label><input id="dist" type="range" min="0.5" max="15" step="0.5" value="3">
 <label for="hour">Pickup hour <span class="val" id="hourv"></span></label><input id="hour" type="range" min="0" max="23" step="1" value="18">
 <label>Promise style</label><div class="seg" id="seg"><button data-k="20">P20–P80</button><button data-k="10" class="on">P10–P90</button></div>
+<label>Calibrated (conformal)</label><div class="seg" id="cal"><button data-c="0" class="on">Raw</button><button data-c="1">Calibrated</button></div>
+<p class="note" id="covn" style="margin-bottom:14px"></p>
 <p class="note" id="n"></p>
 </div>
 <div>
@@ -59,25 +61,34 @@ footer{margin-top:28px;font-size:12px;color:var(--muted)}a{color:inherit}
 <button class="cta" id="slip">Simulate a delay on this order</button>
 <div class="banner" id="banner" role="status"></div>
 </div></div>
+<div class="card" style="margin-top:16px"><div class="tag">Trust vs conversion (ASSUMED elasticity)</div>
+<label for="el" style="margin-top:10px">Assumed conversion change per extra minute of upper bound <span class="val" id="elv"></span></label><input id="el" type="range" min="0" max="2" step="0.1" value="0.5">
+<p class="note" id="fr"></p><p class="note" style="margin-top:6px">The elasticity is an assumption for illustration, not a measured number. Promise-kept rates are measured on the held-out week.</p></div>
 <footer>ETAs = empirical percentiles from 52,455 real trips by distance band × time of day. "Arrive later than promised" = measured on 17,611 held-out trips (Jan 22–31) with a quantile gradient-boosting model. Source: NYC TLC trip records. <a href="https://github.com/akhilesh360">GitHub</a></footer>
 </div>
 <script src="eta_lookup.js"></script>
+<script src="calib.js"></script>
 <script>
-const L=window.ETA_LOOKUP,$=id=>document.getElementById(id);let k=10;
+const L=window.ETA_LOOKUP,C=window.CALIB,$=id=>document.getElementById(id);let k=10,cal=0;
 const band=h=>h<=5?"night":h<=9?"am_rush":h<=15?"midday":h<=19?"pm_rush":"evening";
 const bandName={night:"late night",am_rush:"morning rush",midday:"midday",pm_rush:"evening rush",evening:"evening"};
 function cell(d,h){let i=L.bins.findIndex((b,j)=>d>b&&d<=L.bins[j+1]);if(i<0)i=L.bins.length-2;return L.cells.find(c=>c.dbin===i&&c.band===band(h))}
 const fmtH=h=>`${(h%12)||12} ${h<12?"AM":"PM"}`,r5=x=>Math.max(5,Math.round(x/5)*5);
 const reasons=["Heavier traffic than usual on the route","Courier waiting at the restaurant","Rain slowing pickups in this area","Bridge congestion on the way"];
 function render(){const d=+$("dist").value,h=+$("hour").value,c=cell(d,h);$("distv").textContent=d+" mi";$("hourv").textContent=fmtH(h);
-const lo=r5(k==10?c.p10:c.p20),hi=Math.max(lo+5,r5(k==10?c.p90:c.p80)),p=Math.round(c.p50),max=Math.max(hi+10,c.p90+10);
+const q=cal?(k==10?C.q10:C.q20):0,lo=r5(Math.max(0,(k==10?c.p10:c.p20)-q)),hi=Math.max(lo+5,r5((k==10?c.p90:c.p80)+q)),p=Math.round(c.p50),max=Math.max(hi+10,c.p90+10);
 $("pt").innerHTML=`${p} <small>min</small>`;$("rg").innerHTML=`${lo}–${hi} <small>min</small>`;
 $("ptbar").style.left=(p/max*100)+"%";$("rgbar").style.left=(lo/max*100)+"%";$("rgbar").style.width=((hi-lo)/max*100)+"%";$("ax1").textContent=$("ax2").textContent=Math.round(max)+" min";
-$("ptlate").textContent="57%";$("rglate").textContent=k==10?"14%":"26%";
+$("ptlate").textContent="57%";const st=C["p"+k][cal?"after":"before"];$("rglate").textContent=Math.round(st.late_pct)+"%";
+$("covn").textContent=`${k==10?"P10–P90 targets 80%":"P20–P80 targets 60%"}. Measured inside range on the test week: ${st.coverage_pct}% (${cal?"conformal":"raw"}), avg width ${st.avg_width_min} min.`;
 $("n").textContent=`Based on ${c.n.toLocaleString()} real trips of this length in the ${bandName[band(h)]}.`;$("banner").classList.remove("show");window._s={lo,hi}}
 $("slip").onclick=()=>{const s=window._s,r=reasons[Math.floor(Math.random()*reasons.length)];
 $("banner").innerHTML=`<b>Running about 8 min late</b>, ${r}. New arrival: ${s.lo+5}–${s.hi+8} min. We'll keep you posted.`;$("banner").classList.add("show")};
 $("seg").onclick=e=>{if(!e.target.dataset.k)return;k=+e.target.dataset.k;[...$("seg").children].forEach(b=>b.classList.toggle("on",b===e.target));render()};
+$("cal").onclick=e=>{if(!e.target.dataset.c)return;cal=+e.target.dataset.c;[...$("cal").children].forEach(b=>b.classList.toggle("on",b===e.target));render()};
+function frontier(){const e=+$("el").value;$("elv").textContent="-"+e.toFixed(1)+"%";
+$("fr").innerHTML=C.frontier.map(p=>`Target ${p.target_pct}%: promise kept ${p.on_time_pct}%, upper bound +${p.extra_upper_min_vs_median.toFixed(1)} min, conversion ${(-e*p.extra_upper_min_vs_median).toFixed(1)}%`).join("<br>")}
+$("el").oninput=frontier;frontier();
 ["dist","hour"].forEach(i=>$(i).oninput=render);
 $("theme").onclick=()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark"};
 render();

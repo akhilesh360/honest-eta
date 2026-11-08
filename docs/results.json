@@ -94,5 +94,268 @@
       "avg_min_late_when_late": 3.7,
       "avg_width_min": 1.6
     }
-  ]
+  ],
+  "conformal": {
+    "target_coverage_pct": 80,
+    "rows_fit": 28175,
+    "rows_calibration": 6669,
+    "rows_test": 17611,
+    "qhat_min": 0.25,
+    "segments": [
+      {
+        "kind": "overall",
+        "segment": "all",
+        "before": {
+          "coverage_pct": 77.2,
+          "late_pct": 14.1,
+          "avg_width_min": 8.5,
+          "n": 17611
+        },
+        "after": {
+          "coverage_pct": 80.5,
+          "late_pct": 12.8,
+          "avg_width_min": 9.0,
+          "n": 17611
+        }
+      },
+      {
+        "kind": "hour",
+        "segment": "night",
+        "before": {
+          "coverage_pct": 75.0,
+          "late_pct": 10.6,
+          "avg_width_min": 8.7,
+          "n": 829
+        },
+        "after": {
+          "coverage_pct": 78.0,
+          "late_pct": 9.8,
+          "avg_width_min": 9.2,
+          "n": 829
+        }
+      },
+      {
+        "kind": "hour",
+        "segment": "am_rush",
+        "before": {
+          "coverage_pct": 77.4,
+          "late_pct": 15.9,
+          "avg_width_min": 9.2,
+          "n": 3032
+        },
+        "after": {
+          "coverage_pct": 80.2,
+          "late_pct": 14.5,
+          "avg_width_min": 9.7,
+          "n": 3032
+        }
+      },
+      {
+        "kind": "hour",
+        "segment": "midday",
+        "before": {
+          "coverage_pct": 78.2,
+          "late_pct": 13.8,
+          "avg_width_min": 9.4,
+          "n": 6279
+        },
+        "after": {
+          "coverage_pct": 81.1,
+          "late_pct": 12.7,
+          "avg_width_min": 9.9,
+          "n": 6279
+        }
+      },
+      {
+        "kind": "hour",
+        "segment": "pm_rush",
+        "before": {
+          "coverage_pct": 76.6,
+          "late_pct": 14.6,
+          "avg_width_min": 7.6,
+          "n": 5310
+        },
+        "after": {
+          "coverage_pct": 80.4,
+          "late_pct": 13.1,
+          "avg_width_min": 8.1,
+          "n": 5310
+        }
+      },
+      {
+        "kind": "hour",
+        "segment": "evening",
+        "before": {
+          "coverage_pct": 76.1,
+          "late_pct": 12.8,
+          "avg_width_min": 6.6,
+          "n": 2161
+        },
+        "after": {
+          "coverage_pct": 80.4,
+          "late_pct": 11.2,
+          "avg_width_min": 7.1,
+          "n": 2161
+        }
+      },
+      {
+        "kind": "distance",
+        "segment": "0-1 mi",
+        "before": {
+          "coverage_pct": 75.5,
+          "late_pct": 13.4,
+          "avg_width_min": 4.0,
+          "n": 2972
+        },
+        "after": {
+          "coverage_pct": 81.4,
+          "late_pct": 11.7,
+          "avg_width_min": 4.5,
+          "n": 2972
+        }
+      },
+      {
+        "kind": "distance",
+        "segment": "1-2 mi",
+        "before": {
+          "coverage_pct": 78.2,
+          "late_pct": 13.8,
+          "avg_width_min": 5.6,
+          "n": 6454
+        },
+        "after": {
+          "coverage_pct": 81.9,
+          "late_pct": 12.2,
+          "avg_width_min": 6.1,
+          "n": 6454
+        }
+      },
+      {
+        "kind": "distance",
+        "segment": "2-4 mi",
+        "before": {
+          "coverage_pct": 77.5,
+          "late_pct": 14.3,
+          "avg_width_min": 9.1,
+          "n": 5139
+        },
+        "after": {
+          "coverage_pct": 79.9,
+          "late_pct": 13.0,
+          "avg_width_min": 9.6,
+          "n": 5139
+        }
+      },
+      {
+        "kind": "distance",
+        "segment": "4-8 mi",
+        "before": {
+          "coverage_pct": 77.0,
+          "late_pct": 14.8,
+          "avg_width_min": 15.8,
+          "n": 2262
+        },
+        "after": {
+          "coverage_pct": 78.5,
+          "late_pct": 14.4,
+          "avg_width_min": 16.3,
+          "n": 2262
+        }
+      },
+      {
+        "kind": "distance",
+        "segment": "8-20 mi",
+        "before": {
+          "coverage_pct": 74.1,
+          "late_pct": 16.7,
+          "avg_width_min": 24.1,
+          "n": 784
+        },
+        "after": {
+          "coverage_pct": 75.4,
+          "late_pct": 16.1,
+          "avg_width_min": 24.6,
+          "n": 784
+        }
+      }
+    ],
+    "p20_p80": {
+      "target_coverage_pct": 60,
+      "qhat_min": 0.15,
+      "before": {
+        "coverage_pct": 57.2,
+        "late_pct": 26.3,
+        "avg_width_min": 5.4,
+        "n": 17611
+      },
+      "after": {
+        "coverage_pct": 60.4,
+        "late_pct": 24.8,
+        "avg_width_min": 5.7,
+        "n": 17611
+      }
+    },
+    "frontier": {
+      "assumed_elasticity_pct_per_min": -0.5,
+      "note": "ASSUMPTION: elasticity is illustrative, not measured",
+      "points": [
+        {
+          "target_pct": 50,
+          "on_time_pct": 69.5,
+          "coverage_pct": 50.5,
+          "extra_upper_min_vs_median": 2.4,
+          "assumed_conversion_change_pct": -1.2
+        },
+        {
+          "target_pct": 60,
+          "on_time_pct": 75.2,
+          "coverage_pct": 60.4,
+          "extra_upper_min_vs_median": 3.11,
+          "assumed_conversion_change_pct": -1.56
+        },
+        {
+          "target_pct": 70,
+          "on_time_pct": 81.1,
+          "coverage_pct": 70.6,
+          "extra_upper_min_vs_median": 4.03,
+          "assumed_conversion_change_pct": -2.01
+        },
+        {
+          "target_pct": 75,
+          "on_time_pct": 84.4,
+          "coverage_pct": 75.8,
+          "extra_upper_min_vs_median": 4.63,
+          "assumed_conversion_change_pct": -2.32
+        },
+        {
+          "target_pct": 80,
+          "on_time_pct": 87.2,
+          "coverage_pct": 80.5,
+          "extra_upper_min_vs_median": 5.31,
+          "assumed_conversion_change_pct": -2.65
+        },
+        {
+          "target_pct": 85,
+          "on_time_pct": 90.2,
+          "coverage_pct": 85.7,
+          "extra_upper_min_vs_median": 6.25,
+          "assumed_conversion_change_pct": -3.12
+        },
+        {
+          "target_pct": 90,
+          "on_time_pct": 93.1,
+          "coverage_pct": 90.3,
+          "extra_upper_min_vs_median": 7.48,
+          "assumed_conversion_change_pct": -3.74
+        },
+        {
+          "target_pct": 95,
+          "on_time_pct": 96.1,
+          "coverage_pct": 95.0,
+          "extra_upper_min_vs_median": 9.64,
+          "assumed_conversion_change_pct": -4.82
+        }
+      ]
+    }
+  }
 }

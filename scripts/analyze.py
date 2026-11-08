@@ -78,3 +78,82 @@ bars = ax.bar(names, vals, color=["#9ca3af", "#9ca3af", "#2563eb", "#1e40af"])
 ax.bar_label(bars, fmt="%.0f%%"); ax.set_ylabel("Orders later than promised (%)")
 ax.set_title("Share of trips that arrive after the promised time"); fig.tight_layout()
 fig.savefig(DOCS / "late_share.png", dpi=150)
+
+# ---------------------------------------------------------------------------
+# Split conformal calibration (conformalized quantile regression, CQR).
+# Train quantile models on Jan 1-17, calibrate on Jan 18-21, test on Jan 22-31.
+# Conformity score E = max(lo - y, y - hi); widen both bounds by the
+# ceil((n+1)(1-a))/n quantile of E, which gives >= 1-a coverage under exchangeability.
+fit_cut = df.lpep_pickup_datetime < "2024-01-18"
+ptr, cal = df[fit_cut & cut], df[~fit_cut & cut]
+def fit2(q):
+    m = HistGradientBoostingRegressor(loss="quantile", quantile=q, max_iter=300,
+                                      categorical_features=[3], random_state=0).fit(ptr[X_cols], ptr.minutes)
+    return m.predict(cal[X_cols]), m.predict(te[X_cols])
+yc = cal.minutes.values
+def qhat_for(a, lo_c, hi_c):
+    s = np.maximum(lo_c - yc, yc - hi_c); n = len(s)
+    return float(np.quantile(s, min(1.0, np.ceil((n + 1) * (1 - a)) / n), method="higher"))
+def cov(lo, hi, mask=None):
+    m = np.ones(len(y), bool) if mask is None else mask
+    return {"coverage_pct": round(100 * np.mean((y[m] >= lo[m]) & (y[m] <= hi[m])), 1),
+            "late_pct": round(100 * np.mean(y[m] > hi[m]), 1),
+            "avg_width_min": round(float(np.mean(hi[m] - lo[m])), 1), "n": int(m.sum())}
+lo_c, lo_t = fit2(0.1); hi_c, hi_t = fit2(0.9)
+qh = qhat_for(0.2, lo_c, hi_c)
+lo_k, hi_k = np.maximum(lo_t - qh, 0), hi_t + qh
+band_of = lambda h: pd.cut(h, [-1, 5, 9, 15, 19, 23], labels=["night", "am_rush", "midday", "pm_rush", "evening"])
+te_band = np.asarray(band_of(te.hour)).astype(str)
+dlabels = ["0-1 mi", "1-2 mi", "2-4 mi", "4-8 mi", "8-20 mi"]
+te_dist = np.asarray(pd.cut(te.trip_distance, [0, 1, 2, 4, 8, 20], labels=dlabels)).astype(str)
+segs = [("overall", "all", None)] + [("hour", b, te_band == b) for b in ["night", "am_rush", "midday", "pm_rush", "evening"]] \
+       + [("distance", d, te_dist == d) for d in dlabels]
+calib = {"target_coverage_pct": 80, "rows_fit": int(len(ptr)), "rows_calibration": int(len(cal)), "rows_test": int(len(te)),
+         "qhat_min": round(qh, 2), "segments": []}
+for kind, name, m in segs:
+    calib["segments"].append({"kind": kind, "segment": name, "before": cov(lo_t, hi_t, m), "after": cov(lo_k, hi_k, m)})
+# P20-P80 conformal shift too (for the demo toggle)
+lo2c, lo2t = fit2(0.2); hi2c, hi2t = fit2(0.8)
+qh60 = qhat_for(0.4, lo2c, hi2c)
+calib["p20_p80"] = {"target_coverage_pct": 60, "qhat_min": round(qh60, 2),
+                    "before": cov(lo2t, hi2t), "after": cov(np.maximum(lo2t - qh60, 0), hi2t + qh60)}
+
+# Trust vs conversion frontier. ASSUMPTION (not measured): each extra minute of the
+# upper bound vs the one-number median quote costs 0.5% of orders, relative.
+ELASTICITY = -0.5
+front = []
+for t in [50, 60, 70, 75, 80, 85, 90, 95]:
+    a = 1 - t / 100
+    lc, lt_ = fit2(a / 2); hc, ht_ = fit2(1 - a / 2); q = qhat_for(a, lc, hc)
+    hi_f = ht_ + q; extra = float(np.mean(hi_f - preds[.5]))
+    front.append({"target_pct": t, "on_time_pct": round(100 * np.mean(y <= hi_f), 1),
+                  "coverage_pct": round(100 * np.mean((y >= np.maximum(lt_ - q, 0)) & (y <= hi_f)), 1),
+                  "extra_upper_min_vs_median": round(extra, 2),
+                  "assumed_conversion_change_pct": round(ELASTICITY * extra, 2)})
+calib["frontier"] = {"assumed_elasticity_pct_per_min": ELASTICITY,
+                     "note": "ASSUMPTION: elasticity is illustrative, not measured", "points": front}
+res["conformal"] = calib
+(DOCS / "results.json").write_text(json.dumps(res, indent=2)); print(json.dumps(calib, indent=2))
+(DOCS / "calib.js").write_text("window.CALIB=" + json.dumps({"q10": round(qh, 2), "q20": round(qh60, 2),
+    "p10": {"before": calib["segments"][0]["before"], "after": calib["segments"][0]["after"]},
+    "p20": {"before": calib["p20_p80"]["before"], "after": calib["p20_p80"]["after"]}, "frontier": front}) + ";")
+
+fig, axs = plt.subplots(1, 2, figsize=(11, 4.4), gridspec_kw={"width_ratios": [3, 1.3]})
+S = calib["segments"]; xs = np.arange(len(S)); w = 0.38
+axs[0].bar(xs - w/2, [s["before"]["coverage_pct"] for s in S], w, color="#9ca3af", label="Raw P10-P90")
+axs[0].bar(xs + w/2, [s["after"]["coverage_pct"] for s in S], w, color="#1e40af", label="Conformal (CQR)")
+axs[0].axhline(80, color="#b91c1c", ls="--", lw=1); axs[0].text(len(S) - .5, 80.6, "80% target", color="#b91c1c", ha="right", fontsize=9)
+axs[0].set_xticks(xs, [s["segment"].replace("_", " ") for s in S], rotation=35, ha="right", fontsize=9)
+axs[0].set_ylim(60, 95); axs[0].set_ylabel("Test-week trips inside range (%)"); axs[0].legend(loc="lower left", fontsize=9, frameon=False)
+axs[0].set_title("Coverage by segment, before vs after calibration")
+o = S[0]; axs[1].bar(["Raw", "Conformal"], [o["before"]["avg_width_min"], o["after"]["avg_width_min"]], color=["#9ca3af", "#1e40af"])
+axs[1].bar_label(axs[1].containers[0], fmt="%.1f min"); axs[1].set_title("Avg width"); axs[1].set_ylabel("Minutes")
+fig.tight_layout(); fig.savefig(DOCS / "calibration.png", dpi=150)
+
+fig, ax = plt.subplots(figsize=(7, 4.2))
+ax.plot([-p["assumed_conversion_change_pct"] for p in front], [p["on_time_pct"] for p in front], "o-", color="#1e40af")
+for p in front: ax.annotate(f"{p['target_pct']}%", (-p["assumed_conversion_change_pct"], p["on_time_pct"]),
+                            textcoords="offset points", xytext=(6, -12), fontsize=9, color="#555")
+ax.set_xlabel("Assumed conversion loss (%), at ASSUMED -0.5% per extra minute"); ax.set_ylabel("Promise kept (%)")
+ax.set_title("Trust vs conversion frontier (conformal ranges; elasticity assumed)", fontsize=11); fig.tight_layout()
+fig.savefig(DOCS / "frontier.png", dpi=150)
