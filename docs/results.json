@@ -1,0 +1,98 @@
+{
+  "rows_train": 34844,
+  "rows_test": 17611,
+  "point_mean (one number)": {
+    "on_time_pct": 50.7,
+    "inside_range_pct": 0.0,
+    "late_pct": 49.3,
+    "avg_min_late_when_late": 3.7,
+    "avg_width_min": 0.0
+  },
+  "point_median P50 (one number)": {
+    "on_time_pct": 43.4,
+    "inside_range_pct": 0.0,
+    "late_pct": 56.6,
+    "avg_min_late_when_late": 3.8,
+    "avg_width_min": 0.0
+  },
+  "range P20-P80": {
+    "on_time_pct": 74.4,
+    "inside_range_pct": 57.8,
+    "late_pct": 25.6,
+    "avg_min_late_when_late": 3.6,
+    "avg_width_min": 5.4
+  },
+  "range P10-P90": {
+    "on_time_pct": 85.9,
+    "inside_range_pct": 77.4,
+    "late_pct": 14.1,
+    "avg_min_late_when_late": 3.7,
+    "avg_width_min": 8.5
+  },
+  "width_vs_coverage": [
+    {
+      "nominal": 90,
+      "on_time_pct": 92.4,
+      "inside_range_pct": 88.0,
+      "late_pct": 7.6,
+      "avg_min_late_when_late": 4.1,
+      "avg_width_min": 11.4
+    },
+    {
+      "nominal": 80,
+      "on_time_pct": 85.9,
+      "inside_range_pct": 77.4,
+      "late_pct": 14.1,
+      "avg_min_late_when_late": 3.7,
+      "avg_width_min": 8.5
+    },
+    {
+      "nominal": 70,
+      "on_time_pct": 80.2,
+      "inside_range_pct": 67.6,
+      "late_pct": 19.8,
+      "avg_min_late_when_late": 3.6,
+      "avg_width_min": 6.8
+    },
+    {
+      "nominal": 60,
+      "on_time_pct": 74.4,
+      "inside_range_pct": 57.8,
+      "late_pct": 25.6,
+      "avg_min_late_when_late": 3.6,
+      "avg_width_min": 5.4
+    },
+    {
+      "nominal": 50,
+      "on_time_pct": 68.9,
+      "inside_range_pct": 48.0,
+      "late_pct": 31.1,
+      "avg_min_late_when_late": 3.6,
+      "avg_width_min": 4.3
+    },
+    {
+      "nominal": 40,
+      "on_time_pct": 63.5,
+      "inside_range_pct": 38.2,
+      "late_pct": 36.5,
+      "avg_min_late_when_late": 3.6,
+      "avg_width_min": 3.3
+    },
+    {
+      "nominal": 30,
+      "on_time_pct": 57.9,
+      "inside_range_pct": 28.3,
+      "late_pct": 42.1,
+      "avg_min_late_when_late": 3.6,
+      "avg_width_min": 2.4
+    },
+    {
+      "nominal": 20,
+      "on_time_pct": 53.3,
+      "inside_range_pct": 18.9,
+      "late_pct": 46.7,
+      "avg_min_late_when_late": 3.7,
+      "avg_width_min": 1.6
+    }
+  ]
+}

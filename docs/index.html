@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Honest ETA</title>
+<meta name="description" content="Point ETA vs range ETA, built on real NYC taxi trip durations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--ink:#111;--muted:#6b6b6b;--line:#e6e6e3;--accent:#06c167;--accent-ink:#04532d;--warn:#b45309;--warn-bg:#fff7ed;--bad:#b91c1c;--track:#ececea}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0d0d;--card:#171717;--ink:#f2f2f2;--muted:#a0a0a0;--line:#2a2a2a;--accent:#22d17f;--accent-ink:#b8f5d4;--warn:#fbbf24;--warn-bg:#2a1f0a;--bad:#f87171;--track:#262626}}
+:root[data-theme="dark"]{--bg:#0d0d0d;--card:#171717;--ink:#f2f2f2;--muted:#a0a0a0;--line:#2a2a2a;--accent:#22d17f;--accent-ink:#b8f5d4;--warn:#fbbf24;--warn-bg:#2a1f0a;--bad:#f87171;--track:#262626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:32px 16px 48px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:24px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 6px}p.sub{margin:0;color:var(--muted);max-width:620px}
+button.theme{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;font:inherit;font-size:13px}
+.grid{display:grid;grid-template-columns:300px 1fr;gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+label{display:block;font-size:13px;font-weight:600;margin:0 0 6px}.val{float:right;font-weight:500;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0 0 18px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}.seg button{flex:1;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:8px;font:inherit;font-size:13px;cursor:pointer}
+.seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.note{font-size:12px;color:var(--muted);margin:0}
+.phones{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:520px){.phones{grid-template-columns:1fr}}
+.tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.eta{font-size:40px;font-weight:700;letter-spacing:-.03em;margin:6px 0 2px}.eta small{font-size:16px;font-weight:500;color:var(--muted)}
+.stat{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:10px 0 0;margin-top:12px;font-size:13px}
+.stat b{font-size:15px}.good{color:var(--accent)}.badc{color:var(--bad)}
+.bar{position:relative;height:10px;background:var(--track);border-radius:99px;margin:14px 0 4px}
+.bar .r{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.35;border-radius:99px}.bar .p{position:absolute;top:-3px;width:3px;height:16px;background:var(--ink);border-radius:2px}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.banner{display:none;margin-top:16px;background:var(--warn-bg);border:1px solid var(--warn);color:var(--ink);border-radius:12px;padding:12px 14px;font-size:14px}
+.banner.show{display:block}.banner b{color:var(--warn)}
+.cta{margin-top:16px;width:100%;border:0;border-radius:12px;padding:12px;background:var(--ink);color:var(--bg);font:inherit;font-weight:600;cursor:pointer}
+footer{margin-top:28px;font-size:12px;color:var(--muted)}a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><h1>Honest ETA</h1><p class="sub">One number vs a range. Promise <em>25–35 min</em>, not <em>28 min</em>, and say why when it slips. Numbers come from real NYC green-taxi trips (Jan 2024), used as a proxy for delivery legs.</p></div>
+<button class="theme" id="theme" aria-label="Toggle theme">Theme</button></header>
+<div class="grid">
+<div class="card">
+<label for="dist">Trip distance <span class="val" id="distv"></span></label><input id="dist" type="range" min="0.5" max="15" step="0.5" value="3">
+<label for="hour">Pickup hour <span class="val" id="hourv"></span></label><input id="hour" type="range" min="0" max="23" step="1" value="18">
+<label>Promise style</label><div class="seg" id="seg"><button data-k="20">P20–P80</button><button data-k="10" class="on">P10–P90</button></div>
+<p class="note" id="n"></p>
+</div>
+<div>
+<div class="phones">
+<div class="card"><div class="tag">Today: one number</div><div class="eta" id="pt"></div>
+<div class="bar"><div class="p" id="ptbar"></div></div><div class="axis"><span>0</span><span id="ax1"></span></div>
+<div class="stat"><span>Arrive later than promised</span><b class="badc" id="ptlate"></b></div></div>
+<div class="card"><div class="tag">Proposal: honest range</div><div class="eta" id="rg"></div>
+<div class="bar"><div class="r" id="rgbar"></div></div><div class="axis"><span>0</span><span id="ax2"></span></div>
+<div class="stat"><span>Arrive later than promised</span><b class="good" id="rglate"></b></div></div>
+</div>
+<button class="cta" id="slip">Simulate a delay on this order</button>
+<div class="banner" id="banner" role="status"></div>
+</div></div>
+<footer>ETAs = empirical percentiles from 52,455 real trips by distance band × time of day. "Arrive later than promised" = measured on 17,611 held-out trips (Jan 22–31) with a quantile gradient-boosting model. Source: NYC TLC trip records. <a href="https://github.com/akhilesh360">GitHub</a></footer>
+</div>
+<script src="eta_lookup.js"></script>
+<script>
+const L=window.ETA_LOOKUP,$=id=>document.getElementById(id);let k=10;
+const band=h=>h<=5?"night":h<=9?"am_rush":h<=15?"midday":h<=19?"pm_rush":"evening";
+const bandName={night:"late night",am_rush:"morning rush",midday:"midday",pm_rush:"evening rush",evening:"evening"};
+function cell(d,h){let i=L.bins.findIndex((b,j)=>d>b&&d<=L.bins[j+1]);if(i<0)i=L.bins.length-2;return L.cells.find(c=>c.dbin===i&&c.band===band(h))}
+const fmtH=h=>`${(h%12)||12} ${h<12?"AM":"PM"}`,r5=x=>Math.max(5,Math.round(x/5)*5);
+const reasons=["Heavier traffic than usual on the route","Courier waiting at the restaurant","Rain slowing pickups in this area","Bridge congestion on the way"];
+function render(){const d=+$("dist").value,h=+$("hour").value,c=cell(d,h);$("distv").textContent=d+" mi";$("hourv").textContent=fmtH(h);
+const lo=r5(k==10?c.p10:c.p20),hi=Math.max(lo+5,r5(k==10?c.p90:c.p80)),p=Math.round(c.p50),max=Math.max(hi+10,c.p90+10);
+$("pt").innerHTML=`${p} <small>min</small>`;$("rg").innerHTML=`${lo}–${hi} <small>min</small>`;
+$("ptbar").style.left=(p/max*100)+"%";$("rgbar").style.left=(lo/max*100)+"%";$("rgbar").style.width=((hi-lo)/max*100)+"%";$("ax1").textContent=$("ax2").textContent=Math.round(max)+" min";
+$("ptlate").textContent="57%";$("rglate").textContent=k==10?"14%":"26%";
+$("n").textContent=`Based on ${c.n.toLocaleString()} real trips of this length in the ${bandName[band(h)]}.`;$("banner").classList.remove("show");window._s={lo,hi}}
+$("slip").onclick=()=>{const s=window._s,r=reasons[Math.floor(Math.random()*reasons.length)];
+$("banner").innerHTML=`<b>Running about 8 min late</b> — ${r}. New arrival: ${s.lo+5}–${s.hi+8} min. We'll keep you posted.`;$("banner").classList.add("show")};
+$("seg").onclick=e=>{if(!e.target.dataset.k)return;k=+e.target.dataset.k;[...$("seg").children].forEach(b=>b.classList.toggle("on",b===e.target));render()};
+["dist","hour"].forEach(i=>$(i).oninput=render);
+$("theme").onclick=()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark"};
+render();
+</script>
+</body></html>
