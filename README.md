@@ -6,7 +6,7 @@
 
 ![60-second walkthrough](docs/walkthrough.gif)
 
-**▶ [Live demo](https://akhilesh360.github.io/honest-eta/)** · **🎬 [Full video](docs/demo.webm)** · [Demo script](docs/demo-script.md)
+**Live demo: [akhilesh360.github.io/honest-eta](https://akhilesh360.github.io/honest-eta/)**
 
 ## How it works
 
