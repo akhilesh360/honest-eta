@@ -6,6 +6,17 @@
 
 **▶ [Live demo](https://akhilesh360.github.io/honest-eta/)** · **🎬 [60-second walkthrough](docs/demo.webm)** · [Demo script](docs/demo-script.md)
 
+## How it works
+
+```mermaid
+flowchart LR
+  A["😣 Problem<br/>Late orders break trust"] --> B["📊 Data<br/>52k real NYC trips"]
+  B --> C["🤖 Model<br/>Quantile ETA<br/>P10–P90"]
+  C --> D["⏱️ Feature<br/>Range ETA +<br/>slip reason"]
+  D --> E["⭐ North Star<br/>Promise-kept rate"]
+  E --> F["🧪 A/B test<br/>Repeat users first;<br/>watch conversion"]
+```
+
 ## 1. User and problem
 Delivery customers, especially repeat users, who learn whether the app's promises hold. The app shows one number ("15 min"). Trip times are noisy, so a median-based number is late about half the time. A late order hurts trust more than a long estimate.
 
