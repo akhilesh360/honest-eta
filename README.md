@@ -12,6 +12,8 @@
 
 ![How it works](docs/flow.png)
 
+![Results at a glance](docs/results.png)
+
 ### Data
 
 | | |
@@ -37,6 +39,9 @@ Customers can trust the ETA: when the app makes a promise, the order arrives by 
 **Not building:** a new routing or prep-time model (the point is the promise, not a better predictor); credits for late orders (a separate cost decision); per-user ranges (too complex before we know ranges help).
 
 ## 4. North Star metric
+
+![Metrics framework](docs/metrics.png)
+
 **Promise-kept rate:** % of delivered orders whose actual delivery time is ≤ the upper bound of the range shown at checkout. Arriving early counts as kept.
 
 ## 5. Supporting metrics
@@ -59,6 +64,9 @@ High reach (every order sees an ETA), low effort (reuse existing duration predic
 - **Conformal calibration:** near-zero effort (one held-out quantile shift), so it ships with the range rather than waiting for a later phase.
 
 ## 8. Experiment and learning
+
+![Experiment design](docs/experiment.png)
+
 **What the data in this repo shows (proxy, not Uber data).** NYC green-taxi trips, January 2024: 52,455 trips after cleaning. I trained a gradient-boosting model with quantile loss on pickup hour, weekday, distance and pickup zone. It trained on Jan 1–21 and was tested on Jan 22–31 (17,611 trips).
 
 | Promise (held-out) | Late | Inside range | Avg width | Avg min late, when late |
