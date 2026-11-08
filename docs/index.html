@@ -51,17 +51,17 @@ footer{margin-top:28px;font-size:12px;color:var(--muted)}a{color:inherit}
 </div>
 <div>
 <div class="phones">
-<div class="card"><div class="tag">Today: one number</div><div class="eta" id="pt"></div>
+<div class="card"><div class="tag">Current: point estimate</div><div class="eta" id="pt"></div>
 <div class="bar"><div class="p" id="ptbar"></div></div><div class="axis"><span>0</span><span id="ax1"></span></div>
 <div class="stat"><span>Arrive later than promised</span><b class="badc" id="ptlate"></b></div></div>
-<div class="card"><div class="tag">Proposal: honest range</div><div class="eta" id="rg"></div>
+<div class="card"><div class="tag">Proposed: calibrated range</div><div class="eta" id="rg"></div>
 <div class="bar"><div class="r" id="rgbar"></div></div><div class="axis"><span>0</span><span id="ax2"></span></div>
 <div class="stat"><span>Arrive later than promised</span><b class="good" id="rglate"></b></div></div>
 </div>
 <button class="cta" id="slip">Simulate a delay on this order</button>
 <div class="banner" id="banner" role="status"></div>
 </div></div>
-<div class="card" style="margin-top:16px"><div class="tag">Trust vs conversion (ASSUMED elasticity)</div>
+<div class="card" style="margin-top:16px"><div class="tag">Reliability vs. conversion tradeoff (assumed elasticity)</div>
 <label for="el" style="margin-top:10px">Assumed conversion change per extra minute of upper bound <span class="val" id="elv"></span></label><input id="el" type="range" min="0" max="2" step="0.1" value="0.5">
 <p class="note" id="fr"></p><p class="note" style="margin-top:6px">The elasticity is an assumption for illustration, not a measured number. Promise-kept rates are measured on the held-out week.</p></div>
 <footer>ETAs = empirical percentiles from 52,455 real trips by distance band × time of day. "Arrive later than promised" = measured on 17,611 held-out trips (Jan 22–31) with a quantile gradient-boosting model. Source: NYC TLC trip records. <a href="https://github.com/akhilesh360">GitHub</a></footer>
