@@ -2,9 +2,9 @@
 
 > **PM case study + working prototype** · Delivery ETAs (Uber Eats) · Real NYC TLC taxi trips, Jan 2024 (proxy for delivery legs)
 
-![Demo](docs/hero.png)
+![60-second walkthrough](docs/walkthrough.gif)
 
-**▶ [Live demo](https://akhilesh360.github.io/honest-eta/)** · **🎬 [60-second walkthrough](docs/demo.webm)** · [Demo script](docs/demo-script.md)
+**▶ [Live demo](https://akhilesh360.github.io/honest-eta/)** · **🎬 [Full video](docs/demo.webm)** · [Demo script](docs/demo-script.md)
 
 ## How it works
 
