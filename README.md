@@ -2,6 +2,8 @@
 
 > **PM case study + working prototype** · Delivery ETAs (Uber Eats) · Real NYC TLC taxi trips, Jan 2024 (proxy for delivery legs)
 
+**▶ 60-second demo (plays automatically)**
+
 ![60-second walkthrough](docs/walkthrough.gif)
 
 **▶ [Live demo](https://akhilesh360.github.io/honest-eta/)** · **🎬 [Full video](docs/demo.webm)** · [Demo script](docs/demo-script.md)
@@ -92,4 +94,3 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 open docs/index.html                   # static demo; GitHub Pages serves /docs
 ```
 
-**About:** Built by Sai Akhilesh Veldi. [Portfolio](#) · [LinkedIn](https://www.linkedin.com/in/akhileshsai/)
