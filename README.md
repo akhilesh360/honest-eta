@@ -1,4 +1,4 @@
-# Honest ETA — promise a range, not a number, and get late orders from 57% to 14%
+# Honest ETA: promise a range, not a number, and get late orders from 57% to 14%
 
 > **PM case study + working prototype** · Delivery ETAs (Uber Eats) · Real NYC TLC taxi trips, Jan 2024 (proxy for delivery legs)
 
@@ -75,4 +75,4 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 open docs/index.html                   # static demo; GitHub Pages serves /docs
 ```
 
-**About** — Built by Sai Akhilesh Veldi. [Portfolio](#) · [LinkedIn](https://www.linkedin.com/in/akhileshsai/)
+**About**, Built by Sai Akhilesh Veldi. [Portfolio](#) · [LinkedIn](https://www.linkedin.com/in/akhileshsai/)

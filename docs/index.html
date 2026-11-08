@@ -76,7 +76,7 @@ $("ptbar").style.left=(p/max*100)+"%";$("rgbar").style.left=(lo/max*100)+"%";$("
 $("ptlate").textContent="57%";$("rglate").textContent=k==10?"14%":"26%";
 $("n").textContent=`Based on ${c.n.toLocaleString()} real trips of this length in the ${bandName[band(h)]}.`;$("banner").classList.remove("show");window._s={lo,hi}}
 $("slip").onclick=()=>{const s=window._s,r=reasons[Math.floor(Math.random()*reasons.length)];
-$("banner").innerHTML=`<b>Running about 8 min late</b> — ${r}. New arrival: ${s.lo+5}–${s.hi+8} min. We'll keep you posted.`;$("banner").classList.add("show")};
+$("banner").innerHTML=`<b>Running about 8 min late</b>, ${r}. New arrival: ${s.lo+5}–${s.hi+8} min. We'll keep you posted.`;$("banner").classList.add("show")};
 $("seg").onclick=e=>{if(!e.target.dataset.k)return;k=+e.target.dataset.k;[...$("seg").children].forEach(b=>b.classList.toggle("on",b===e.target));render()};
 ["dist","hour"].forEach(i=>$(i).oninput=render);
 $("theme").onclick=()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark"};

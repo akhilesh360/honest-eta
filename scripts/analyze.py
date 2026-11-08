@@ -67,7 +67,7 @@ ax.plot([c["avg_width_min"] for c in curve], [c["inside_range_pct"] for c in cur
 for c in curve: ax.annotate(f"P{50-c['nominal']//2}-P{50+c['nominal']//2}", (c["avg_width_min"], c["inside_range_pct"]),
                             textcoords="offset points", xytext=(6, -12), fontsize=9, color="#555")
 ax.set_xlabel("Average range width (minutes)"); ax.set_ylabel("Trips arriving inside range (%)")
-ax.set_title("Wider promise, more trips kept — with diminishing returns"); fig.tight_layout()
+ax.set_title("Wider promise, more trips kept, with diminishing returns"); fig.tight_layout()
 fig.savefig(DOCS / "width_vs_coverage.png", dpi=150)
 
 fig, ax = plt.subplots(figsize=(7, 4.2))

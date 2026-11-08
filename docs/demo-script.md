@@ -1,4 +1,4 @@
-# Honest ETA — 60-second walkthrough script
+# Honest ETA: 60-second walkthrough script
 
 **0:00–0:08 · Hook.** "A late order hurts trust more than a long estimate. So I tested what happens if Uber Eats promised a range instead of one number."
 
