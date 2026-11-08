@@ -10,6 +10,17 @@
 
 ![How it works](docs/flow.png)
 
+### Data
+
+| | |
+|---|---|
+| **Dataset** | [NYC TLC Trip Record Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page), green taxi, January 2024 |
+| **Source** | NYC Taxi & Limousine Commission (public open data) |
+| **License** | NYC Open Data terms of use (free public use) |
+| **Size used** | 52,455 trips after cleaning; train Jan 1–17, calibrate Jan 18–21, test Jan 22–31 (17,611 trips) |
+| **Real or simulated** | Model, coverage and late-rate results: **real data**. Conversion tradeoff: **assumed elasticity**, labelled as such |
+| **Why a proxy** | Public delivery-time data does not exist; taxi trips model the travel leg of a delivery |
+
 ## 1. User and problem
 Delivery customers, especially repeat users, who learn whether the app's promises hold. The app shows one number ("15 min"). Trip times are noisy, so a median-based number is late about half the time. A late order hurts trust more than a long estimate.
 
