@@ -75,4 +75,4 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 open docs/index.html                   # static demo; GitHub Pages serves /docs
 ```
 
-**About**, Built by Sai Akhilesh Veldi. [Portfolio](#) · [LinkedIn](https://www.linkedin.com/in/akhileshsai/)
+**About:** Built by Sai Akhilesh Veldi. [Portfolio](#) · [LinkedIn](https://www.linkedin.com/in/akhileshsai/)
